@@ -16,21 +16,22 @@
          (equal? (neighbours 'a tester_graph) '(b f))
          (equal? (neighbours 'a tester_graph) '(b f))
          )(display "[OK] Neighbours tests passed successfully \n"))
-      (else (display "[ERROR] Neighbours"))
+      (else (display "[ERROR] Neighbours \n"))
       )
   )
 
 (define (run_findpath)
   (cond((and
          (equal? (findPath 'a 'b neighbours tester_graph) '(a b))
-         )(display "[OK] FindPath tests passed successfully"))
-      (else (display "[ERROR] FindPath"))
+         )(display "[OK] FindPath tests passed successfully \n"))
+      (else (display "[ERROR] FindPath \n"))
       )
   )
 
 (define (run_finder_test)
+  (display "GRAPH TESTS-------------------------------- \n")
   (cond ((and
           (run_neighbours)
-          (run_findpath)))))
+          (run_findpath))))
+  (display "GRAPH TESTS-------------------------------- \n"))
 
-(run_finder_test)
