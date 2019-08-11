@@ -1,33 +1,45 @@
 #lang racket
 
 (provide neighbours
-         findPath)
+         findPath-depth)
 
-; Node, Graph => Neighbours
-(define (neighbours node graph)
-  (local
-    ; [List-of Node Neighbours] => Boolean
-    ((define (isNode? x)
-       (symbol=? (first x) node))
-     (define nodeAndNeighbours
-       (first (filter isNode? graph))))
-    (second nodeAndNeighbours)))
+;There is route
+(define (solution? end route)
+  (equal? end (car route)))
 
-; Node, Node, [Node, Graph => Neighbours], Graph => [Maybe Path]
-(define (findPath s t neighbours graph)
-  (cond
-    ((symbol=? s t) (list t))
-    (else
-     (local
-       ; Neighbours => [Maybe Path]
-       ((define (findPathFrom n)
-          (cond
-            ((empty? n) #false)
-            (else
-             (local
-               ((define path (findPath (first n) t neighbours graph)))
-               (if (cons? path)
-                   (cons s path)
-                   (findPathFrom (rest n))))))))
-       (findPathFrom (neighbours s graph))))))
-          
+;Neighbors
+(define (neighbours ele graph)
+  (let ((result (assoc ele graph)))
+    (cond ((equal? result #f)
+           #f)
+          (else
+           (cadr result)))))
+
+;Find routes by depth first
+(define (member? ele list1)
+  (cond((null? list1)
+        #f)
+       ((equal? ele (car list1))
+        #t)
+       (else
+        (member? ele (cdr list1)))))
+
+(define (extend route graph)
+  (apply append(map(lambda(x)
+                     (cond ((member? x route) '())
+                           (else (list (cons x route)))))
+                   (neighbours (car route) graph))))
+
+(define (findPath-depth start end graph)
+  (depth-aux (list (list start)) end graph))
+
+(define (depth-aux routes end graph)
+  (cond ((null? routes)
+         '())
+        ((solution? end (car routes))
+         (reverse (car routes)))
+        (else
+         (depth-aux (append (extend (car routes) graph)
+                            (cdr routes))
+                    end
+                    graph))))

@@ -12,9 +12,9 @@
 (define (run_neighbours)
   (cond((and
          (equal? (neighbours 'a tester_graph) '(b f))
-         (equal? (neighbours 'a tester_graph) '(b f))
-         (equal? (neighbours 'a tester_graph) '(b f))
-         (equal? (neighbours 'a tester_graph) '(b f))
+         (equal? (neighbours 'g tester_graph) '(b h))
+         (equal? (neighbours 'm tester_graph) '(h l r))
+         (equal? (neighbours 's tester_graph) '(n t))
          )(display "[OK] Neighbours tests passed successfully \n"))
       (else (display "[ERROR] Neighbours \n"))
       )
@@ -22,7 +22,8 @@
 
 (define (run_findpath)
   (cond((and
-         (equal? (findPath 'a 'b neighbours tester_graph) '(a b))
+         (equal? (findPath-depth 'a 'c tester_graph) '(a b c))
+         ;(equal? (findPath-depth 'g 'd tester_graph) '(g b a f k p q r s n m h i d))
          )(display "[OK] FindPath tests passed successfully \n"))
       (else (display "[ERROR] FindPath \n"))
       )
