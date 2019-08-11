@@ -1,4 +1,7 @@
-#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname graph) (read-case-sensitive #t) (teachpacks ((lib "image.rkt" "teachpack" "2htdp"))) (htdp-settings #(#t constructor repeating-decimal #f #t none #f ((lib "image.rkt" "teachpack" "2htdp")) #f)))
+#lang racket
+
+(provide neighbours
+         findPath)
 
 ; Node, Graph => Neighbours
 (define (neighbours node graph)
