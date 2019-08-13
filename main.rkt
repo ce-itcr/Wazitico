@@ -13,14 +13,18 @@
 
 (require "app/interface.rkt"
          "src/pathfind/finder.rkt"
-         "test/pathfind/finder_tests.rkt")
+         
+         "test/pathfind/finder_tests.rkt"
+         "test/interface/interface_tests.rkt"
+         )
 
 (module+ test
   ;;Tests to be run
-  (run_finder_test)
+  ;(run_finder_test)
+  ;(run_map_tests)
   )
 
 (module+ main
   ;;Main entry point, executed when run with the `racket executable`.
-  (load-map)
+  (runner #t)
   )
