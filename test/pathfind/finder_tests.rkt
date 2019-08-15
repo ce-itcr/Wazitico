@@ -1,6 +1,7 @@
 #lang racket
 
-(require "../../src/pathfind/finder.rkt")
+(require "../../src/pathfind/finder.rkt"
+         "../../src/util/basic_operations.rkt")
 (provide run_finder_test)
 
 (define tester_graph '((a (b f)) (b (a c)) (c (b d h)) (d (c e)) (e (d j)) (f (a g k))
