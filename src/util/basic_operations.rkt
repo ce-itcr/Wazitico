@@ -1,9 +1,16 @@
 #lang racket
 
-(provide member-list? extract-element remove-element last-element invert-list)
+(provide member-list? extract-element remove-element last-element reverse-list reverse-sublists)
 (provide first-node except-first isEmpty? get-neighbors)
 
 #|*********************************************************LIST OPERATIONS*********************************************************|#
+
+;Length of a list
+(define (length list1)
+  (cond ((null? list1)
+         0)
+        (else
+         (+ 1 ( length (cdr list1))))))
 
 ;List Member
 (define (member-list? ele list1)
@@ -43,12 +50,24 @@
         (last-element (cdr list1)))))
 
 ;Invert a list
-(define (invert-list list1)
+(define (reverse-list list1)
   (cond ((null? list1)
          '())
         (else
-         (append (invert-list (cdr list1))
+         (append (reverse-list (cdr list1))
                  (list (car list1))))))
+
+;Reverse sublists
+(define (reverse-sublists list1)
+  (reverse-sublists-aux list1 '()))
+
+(define (reverse-sublists-aux list1 result)
+  (cond ((null? list1)
+         (reverse result))
+        (else
+         (reverse-sublists-aux (cdr list1)
+                               (cons (reverse (car list1))
+                                     result)))))
 
 
 #|********************************************************GRAPH OPERATIONS*********************************************************|#

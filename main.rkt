@@ -12,8 +12,6 @@
 #lang racket
 
 (require "app/interface.rkt"
-         "src/pathfind/finder.rkt"
-         
          "test/pathfind/finder_tests.rkt"
          "test/interface/interface_tests.rkt"
          )
