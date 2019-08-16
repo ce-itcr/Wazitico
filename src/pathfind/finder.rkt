@@ -3,8 +3,7 @@
 (require "../util/basic_operations.rkt")
 (provide find-paths)
 
-
-;;Find all routes between src and dest in a graph
+;Find all routes between src and dest in a graph
 ;;Function uses width first
 (define (find-paths src dest graph)
   (cond ((equal? src dest)
@@ -15,7 +14,7 @@
 (define (find-paths-aux paths end graph result)
   (cond ((null? paths)
          (reverse-sublists result))
-        ((equal? end (car paths))
+        ((equal? end (caar paths))
          (find-paths-aux (cdr paths)
                          end
                          graph
@@ -26,4 +25,6 @@
                          end
                          graph
                          result))))
+
+
 
