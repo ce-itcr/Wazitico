@@ -1,7 +1,7 @@
 #lang racket
 
 (provide member-list? extract-element remove-element last-element reverse-list reverse-sublists)
-(provide first-node except-first isEmpty? get-neighbors)
+(provide first-node except-first isEmpty? get-neighbors extend)
 
 #|*********************************************************LIST OPERATIONS*********************************************************|#
 
@@ -85,3 +85,16 @@
   (cond ((null? graph) '()) ; did not find node in the graph.
         ((equal? node (caar graph)) (cadar graph))
         (else (get-neighbors node (cdr graph)))))
+
+;Function that creates new paths
+(define (extend path graph)
+  (extend-aux (get-neighbors (car path) graph) '() path))
+
+(define (extend-aux neighbors result path)
+  (cond ((null? neighbors)
+         result)
+        ((member-list? (car neighbors) path) (extend-aux (cdr neighbors) result path))
+        (else
+         (extend-aux (cdr neighbors)
+                     (append result (list (list* (car neighbors) path)))
+                     path))))
