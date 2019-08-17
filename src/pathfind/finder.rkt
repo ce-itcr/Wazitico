@@ -3,6 +3,23 @@
 (require "../util/basic_operations.rkt")
 (provide find-paths)
 
+(define graph '())
+
+(define (addToGraph first second)
+  (cond ((not (axisExists first second graph))
+         (set! graph
+              (cons (cons first (list second)) graph)))))
+
+(define (axisExists from to localGraph)
+  (cond ((empty? localGraph)
+         #f)
+        ((and (eq? (caar localGraph) from) (eq? (cadar localGraph) to))
+         #t)
+        (else
+         (axisExists from to (cdr localGraph)))
+       )
+  )
+
 ;Find all routes between src and dest in a graph
 ;;Function uses width first
 (define (find-paths src dest graph)
@@ -25,6 +42,7 @@
                          end
                          graph
                          result))))
+
 
 
 
