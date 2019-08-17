@@ -2,3 +2,5 @@
 *.bak
 
 PruebasLocales/
+
+src/util/compiled/drracket/errortrace/

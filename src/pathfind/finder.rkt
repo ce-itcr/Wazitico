@@ -6,17 +6,31 @@
 (define graph '())
 
 (define (addToGraph first second)
-  (cond ((not (axisExists first second graph))
+  (cond ((null? (axisExists first second graph 0))
          (set! graph
-              (cons (cons first (list second)) graph)))))
+               (cons (cons first (list (list second))) graph)))
+        ((not (= (car (axisExists first second graph 0)) -1))
+         (addByIndex (car (axisExists first second graph 0)) second (list-ref graph (car (axisExists first second graph 0)))))))
 
-(define (axisExists from to localGraph)
+(define (addByIndex index numToAdd oldNode)
+  (set! graph
+        (cons (append (list (list-ref oldNode 0)) (list(cons numToAdd (list-ref oldNode 1)))) (remove (list-ref graph index) graph))))
+
+(define (axisExists from to localGraph index)
   (cond ((empty? localGraph)
-         #f)
-        ((and (eq? (caar localGraph) from) (eq? (cadar localGraph) to))
-         #t)
+         '())
+        ((eq? (caar localGraph) from)
+         (axisExistsTo to (cadar localGraph) index))
         (else
-         (axisExists from to (cdr localGraph)))
+         (axisExists from to (cdr localGraph) (+ index 1)))
+       )
+  )
+
+(define (axisExistsTo to localList index)
+  (cond((member-list? to localList)
+        '(-1))
+       (else
+        (list index))
        )
   )
 
