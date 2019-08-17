@@ -1,43 +1,93 @@
 #lang racket/gui
-(require 2htdp/image)
-(require data-frame map-widget mrlib/snip-canvas)
+
+(require racket/draw simple-svg)
+(require "../src/pathfind/finder.rkt")
 (provide runner)
+
+
 
 #|*********************************************************UI DEFINITIONS*********************************************************|#
 
-;Window Definitions
-(define  mainScreen (new frame% [label "Wazitico | Home"] [width 1000] [height 700]))
-(define infoScreen (new frame% [label "Wazitico | Info"] [width 1000] [height 700]))
-
-;Load media
-(define app_icon (make-object bitmap% "img/ic_launcher.png"))
-(define (runAssets canvas dc) (send dc set-scale 0.4 0.4) (send dc draw-bitmap app_icon 10 0))
-
-;(mainScreen -> infoScreen) 
-(define toInfoScreen_btn (new button% [parent mainScreen] [label app_icon] [callback (lambda (button event) (toinfoScreen))]))
-(define (toinfoScreen) (send  mainScreen show #f) (send infoScreen show #t))
-
-;(infoScreen -> mainScreen) 
-(define toMainScreen_btn (new button% [parent infoScreen] [label "BACK"] [callback (lambda (button event) (toMainScreen))]))
-(define (toMainScreen) (send  mainScreen show #t) (send infoScreen show #f))
+(define (xypos-hash f h) (make-immutable-hash (hash-map h (lambda (k v)(cons k (f v))))))
+(define counter 0)
 
 
-#|**********************************************************MAP FUNCTIONS*********************************************************|#
+;Windows and Interface Panels
+(define window (new frame% [label "Wazitico"] [width 1200] [height 700]))
+(define row (new horizontal-panel% [parent window] [style '(border)] [alignment '(center center)]))
+(define left-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)]))
+(define center-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)]))
+(define right-column (new vertical-panel% [parent row] [style '(border)][alignment '(center center)]))
 
-;Load map from openStreetMap using map-widget
-(define (load-map)
-  (define map (new map-widget% [parent mainScreen]))
-  (send mainScreen show #t)
+;Interaction spaces in right panel : Add Nodes
+(define name-field
+  (new text-field% [parent right-column] [label "Name:"]))
+(define x-field
+  (new text-field% [parent right-column] [label "X Pos:"]))
+(define y-field
+  (new text-field% [parent right-column] [label "Y Pos:"]))
+(define to-box
+  (new text-field% [parent right-column] [label "To:"]))
+
+;Functions to Add Nodes
+(define add_node_btn (new button%  [parent right-column] [label "ADD NODE"]  [callback (lambda (button event) (addNodetoGraph))]))
+(define (addNodetoGraph)
+  (drawNodes (string->number(send x-field get-value)) (string->number(send y-field get-value)))
   )
+
+(define (addPostoHash x y)
+  ((hash-set! xypos-hash (+ 'x counter) (+ 'y counter))
+   (set! counter (+ counter 1))))
+
+
+;Interaction spaces in right panel : Find Paths
+(define src-field
+  (new text-field% [parent right-column] [label "SRC"]))
+(define dest-field
+  (new text-field% [parent right-column] [label "DEST"]))
+
+;Functions to Find Paths
+(define search_routes_btn (new button%  [parent right-column] [label "SEARCH"]  [callback (lambda (button event) (searchRoutes))]))
+(define (searchRoutes)
+  (display (find-paths (string->number (send src-field get-value)) (string->number (send dest-field get-value)) graph))
+  (find-paths (string->number (send src-field get-value)) (string->number (send dest-field get-value)) graph)
+)
+
+;Interaction spaces in right panel : Join Nodes
+(define from-field
+  (new text-field% [parent right-column] [label "FROM"]))
+(define to-field
+  (new text-field% [parent right-column] [label "TO"]))
+
+;Functions to join Nodes
+(define (joinNodes_btn)(new button%  [parent right-column] [label "SEARCH"]  [callback (lambda (button event) (joinNodes))]))
+
+(define (joinNodes)
+  (addToGraph (string->number (send name-field get-value)) (string->number (send  to-box get-value)))
+  (display graph)
+  )
+
+;Map Display
+(define map-canvas (new canvas% [parent center-column]))
+(define dc (send map-canvas get-dc))
+
+(define (drawNodes x y)
+  (send dc set-brush "black" 'solid)
+  (send dc draw-ellipse x y 10 10)
+)
+
+(define (drawRoutes x1 y1 x2 y2)
+  (send dc set-brush "black" 'solid)
+  (send dc draw-line x1 y1 x2 y2)
+  )
+
+(send window show #t)
 
 ;Run Main Application
 (define (runner bool)
   (cond ((equal? bool #t)
-         (send mainScreen show #t)
-         (load-map))
+         (send window show #t)
+         ;(load-map)
+         )
         (else
-         (send mainScreen show #f))))
-
-
-
-
+         (send window show #f))))

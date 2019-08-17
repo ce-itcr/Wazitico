@@ -1,7 +1,7 @@
 #lang racket
 
 (require "../util/basic_operations.rkt")
-(provide find-paths)
+(provide find-paths addToGraph graph)
 
 (define graph '())
 
@@ -35,7 +35,7 @@
   )
 
 ;Find all routes between src and dest in a graph
-;;Function uses width first
+;Function uses width first
 (define (find-paths src dest graph)
   (cond ((equal? src dest)
          (list src))
@@ -55,8 +55,7 @@
                                  (cdr paths))
                          end
                          graph
-                         result))))
-
-
+                         result)
+         )))
 
 

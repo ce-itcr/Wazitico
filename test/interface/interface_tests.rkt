@@ -1,5 +1,7 @@
 #lang racket
 
+(require racket/draw)
+
 (require "../../app/interface.rkt")
 (provide run_interface_test)
 
