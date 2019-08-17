@@ -30,7 +30,6 @@
 (define center-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)]))
 (define right-column (new vertical-panel% [parent row] [style '(border)][alignment '(center center)]))
 
-
 #|**************************************************RIGHT COLUMN DEFINITIONS***************************************************|#
 
 ;;Interaction spaces in right panel : Add Nodes
@@ -40,20 +39,16 @@
   (new text-field% [parent right-column] [label "X Pos:"]))
 (define y-field
   (new text-field% [parent right-column] [label "Y Pos:"]))
-(define to-box
-  (new text-field% [parent right-column] [label "To:"]))
-
-;;Interaction spaces in right panel : Find Paths
-(define src-field
-  (new text-field% [parent right-column] [label "SRC"]))
-(define dest-field
-  (new text-field% [parent right-column] [label "DEST"]))
 
 ;;Interaction spaces in right panel : Join Nodes
 (define from-field
   (new text-field% [parent right-column] [label "FROM"]))
 (define to-field
   (new text-field% [parent right-column] [label "TO"]))
+
+;;List box with all paths
+(define all-paths-list
+  (new list-box% [parent right-column] [label "Paths:"] [choices '("a" "b" "c")] [style (list 'single 'column-headers 'variable-columns)] [columns (list "Column1" "Column2" "Column3")]))
 
 
 #|***************************************************RIGHT COLUMN FUNCTIONS****************************************************|#
@@ -67,22 +62,30 @@
   ((hash-set! xypos-hash (+ 'x counter) (+ 'y counter))
    (set! counter (+ counter 1))))
 
+;;Functions to join Nodes
+(define joinNodes_btn(new button%  [parent right-column] [label "JOIN NODES"]  [callback (lambda (button event) (joinNodes))]))
+(define (joinNodes)
+  (addToGraph (string->number (send from-field get-value)) (string->number (send  to-field get-value)))
+  (display graph)
+  )
+
+#|*************************************************CENTER COLUMN DEFINITIONS***************************************************|#
+
+;;Interaction spaces in right panel : Find Paths
+(define src-field
+  (new text-field% [parent center-column] [label "SRC"] [min-width 100]))
+(define dest-field
+  (new text-field% [parent center-column] [label "DEST"] [min-width 100]))
+
+
+#|**************************************************CENTER COLUMN FUNCTIONS****************************************************|#
+
 ;;Functions to Find Paths
-(define search_routes_btn (new button%  [parent right-column] [label "SEARCH"]  [callback (lambda (button event) (searchRoutes))]))
+(define search_routes_btn (new button%  [parent center-column] [label "SEARCH"] [callback (lambda (button event) (searchRoutes))]))
 (define (searchRoutes)
   (display (find-paths (string->number (send src-field get-value)) (string->number (send dest-field get-value)) graph))
   (find-paths (string->number (send src-field get-value)) (string->number (send dest-field get-value)) graph)
 )
-
-;;Functions to join Nodes
-(define (joinNodes_btn)(new button%  [parent right-column] [label "SEARCH"]  [callback (lambda (button event) (joinNodes))]))
-(define (joinNodes)
-  (addToGraph (string->number (send name-field get-value)) (string->number (send  to-box get-value)))
-  (display graph)
-  )
-
-
-#|**************************************************CENTER COLUMN FUNCTIONS****************************************************|#
 
 ;;Map Display
 (define map-canvas (new canvas% [parent center-column]))
@@ -100,7 +103,14 @@
   (send dc draw-line x1 y1 x2 y2)
   )
 
+#|**************************************************LEFT COLUMN DEFINITIONS****************************************************|#
 
+(define app_icon (make-object bitmap% "img/ic_launcher.png"))
+;(define (draw-app_icon left-column dc) (send dc set-scale 0.4 0.4))
+;(send dc draw-bitmap app_icon 10 10)
+(void (new message% [parent left-column] [label app_icon]))
+
+#|***************************************************LEFT COLUMN FUNCTIONS*****************************************************|#
 
 
 #|******************************************************INTERFACE RUNNER*******************************************************|#
