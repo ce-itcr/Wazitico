@@ -20,8 +20,7 @@
 (define  gray-brush    (instantiate brush% ("GRAY" 'solid)))
 
 ;;Interface Variable Definition
-(define (xypos-hash f h) (make-immutable-hash (hash-map h (lambda (k v)(cons k (f v))))))
-(define counter 0)
+(define xypos-hash (make-hash))
 
 ;;Windows and Interface Panels
 (define window (new frame% [label "Wazitico"] [width 1200] [height 700]))
@@ -57,15 +56,17 @@
 (define add_node_btn (new button%  [parent right-column] [label "ADD NODE"]  [callback (lambda (button event) (addNodetoGraph))]))
 (define (addNodetoGraph)
   (drawNodes (string->number(send x-field get-value)) (string->number(send y-field get-value)))
+  (addPostoHash (send name-field get-value) (list (+ (string->number(send x-field get-value)) 5) (+ (string->number(send y-field get-value)) 5)))
   )
-(define (addPostoHash x y)
-  ((hash-set! xypos-hash (+ 'x counter) (+ 'y counter))
-   (set! counter (+ counter 1))))
+(define (addPostoHash key lista)
+  (hash-set! xypos-hash key lista)
+   )
 
 ;;Functions to join Nodes
 (define joinNodes_btn(new button%  [parent right-column] [label "JOIN NODES"]  [callback (lambda (button event) (joinNodes))]))
 (define (joinNodes)
   (addToGraph (string->number (send from-field get-value)) (string->number (send  to-field get-value)))
+  (send dc draw-line (car(hash-ref xypos-hash (send from-field get-value))) (cadr(hash-ref xypos-hash (send from-field get-value))) (car(hash-ref xypos-hash (send  to-field get-value))) (cadr(hash-ref xypos-hash (send  to-field get-value))))
   (display graph)
   )
 

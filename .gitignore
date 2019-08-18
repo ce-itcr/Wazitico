@@ -4,3 +4,11 @@
 PruebasLocales/
 
 src/util/compiled/drracket/errortrace/
+
+app/compiled/drracket/errortrace/
+
+src/pathfind/compiled/drracket/errortrace/
+
+test/interface/compiled/drracket/errortrace/
+
+test/pathfind/compiled/drracket/errortrace/
