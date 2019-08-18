@@ -5,6 +5,7 @@
 
 (define graph '())
 
+;Receives two nodes and adds them to the graph as a connection with the format (first (second)).
 (define (addToGraph first second)
   (cond ((null? (axisExists first second graph 0))
          (set! graph
@@ -16,6 +17,7 @@
   (set! graph
         (cons (append (list (list-ref oldNode 0)) (list(cons numToAdd (list-ref oldNode 1)))) (remove (list-ref graph index) graph))))
 
+;Check if the axis exists in the graph
 (define (axisExists from to localGraph index)
   (cond ((empty? localGraph)
          '())
