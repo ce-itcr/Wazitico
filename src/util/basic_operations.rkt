@@ -1,6 +1,6 @@
 #lang racket
 
-(provide member-list? extract-element remove-element last-element reverse-list reverse-sublists)
+(provide length member-list? extract-element remove-element last-element reverse-list reverse-sublists)
 (provide first-node except-first isEmpty? get-neighbors extend)
 
 #|*********************************************************LIST OPERATIONS*********************************************************|#
