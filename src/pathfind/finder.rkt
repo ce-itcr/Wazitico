@@ -6,6 +6,7 @@
 (define graph '())
 
 ;Receives two nodes and adds them to the graph as a connection with the format (first (second)).
+;If either the first node or both are already in the graph, the function adds what's needed only.
 (define (addToGraph first second)
   (cond ((null? (axisExists first second graph 0))
          (set! graph
