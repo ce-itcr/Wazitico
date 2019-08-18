@@ -12,3 +12,5 @@ src/pathfind/compiled/drracket/errortrace/
 test/interface/compiled/drracket/errortrace/
 
 test/pathfind/compiled/drracket/errortrace/
+
+app/util/compiled/drracket/errortrace/

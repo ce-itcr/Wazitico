@@ -1,7 +1,8 @@
 #lang racket/gui
 
 (require racket/draw simple-svg)
-(require "../src/pathfind/finder.rkt")
+(require "../src/pathfind/finder.rkt"
+         "util/gui_functions.rkt")
 (provide runner)
 
 
@@ -14,75 +15,98 @@
 (define gray (make-object color% "gray"))
 
 ;;Pens and their colors
-(define red-drawing-pen   (make-object pen% red 4 'solid))
+(define red-drawing-pen (make-object pen% red 4 'solid))
 (define gray-drawing-pen (make-object pen% gray 4 'solid))
-(define red-brush    (instantiate brush% ("RED" 'solid)))
-(define  gray-brush    (instantiate brush% ("GRAY" 'solid)))
+(define red-brush (instantiate brush% ("RED" 'solid)))
+(define  gray-brush (instantiate brush% ("GRAY" 'solid)))
 
 ;;Interface Variable Definition
 (define xypos-hash (make-hash))
 
 ;;Windows and Interface Panels
-(define window (new frame% [label "Wazitico"] [width 1200] [height 700]))
+(define window (new frame% [label "Wazitico"] [width 1200] [height 700] [style '(no-resize-border)]))
 (define row (new horizontal-panel% [parent window] [style '(border)] [alignment '(center center)]))
-(define left-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)]))
-(define center-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)]))
-(define right-column (new vertical-panel% [parent row] [style '(border)][alignment '(center center)]))
+(define left-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)] [min-width 300]))
+(define center-column (new vertical-panel% [parent row] [style '(border)] [alignment '(center center)] [min-width 600]))
+(define right-column (new vertical-panel% [parent row] [style '(border)][alignment '(center center)] [min-width 300]))
+
 
 #|**************************************************RIGHT COLUMN DEFINITIONS***************************************************|#
 
 ;;Interaction spaces in right panel : Add Nodes
 (define name-field
-  (new text-field% [parent right-column] [label "Name:"]))
+  (new text-field% [parent right-column] [label "Name:"] [font (make-object font% 10 'default 'normal)]))
 (define x-field
-  (new text-field% [parent right-column] [label "X Pos:"]))
+  (new text-field% [parent right-column] [label "X Pos:"] [font (make-object font% 10 'default 'normal )]))
 (define y-field
-  (new text-field% [parent right-column] [label "Y Pos:"]))
+  (new text-field% [parent right-column] [label "Y Pos:"] [font (make-object font% 10 'default 'normal )]))
+
+(define add_node_btn (new button%  [parent right-column] [label "ADD NODE"] [font (make-object font% 10 'default 'normal 'bold)]
+                                   [callback (lambda (button event) (addNodetoGraph))]))
 
 ;;Interaction spaces in right panel : Join Nodes
 (define from-field
-  (new text-field% [parent right-column] [label "FROM"]))
+  (new text-field% [parent right-column] [label "From"] [font (make-object font% 10 'default 'normal )]))
 (define to-field
-  (new text-field% [parent right-column] [label "TO"]))
+  (new text-field% [parent right-column] [label "To"] [font (make-object font% 10 'default 'normal )]))
+
+(define joinNodes_btn(new colorable-button%  [parent right-column] [label "JOIN NODES"] [font (make-object font% 10 'default 'normal 'bold)]
+                                   [callback (lambda (button event) (joinNodes))] ))
+
+(send joinNodes_btn set-color (make-object color% 188 220 252))
 
 ;;List box with all paths
 (define all-paths-list
-  (new list-box% [parent right-column] [label "Paths:"] [choices '("a" "b" "c")] [style (list 'single 'column-headers 'variable-columns)] [columns (list "Column1" "Column2" "Column3")]))
+  (new list-box% [parent right-column] [label "Paths"] [font (make-object font% 10 'default 'normal )]
+                 [choices '("a" "b" "c")]
+                 [style (list 'single 'column-headers 'variable-columns)]
+                 [columns (list "A" "B" "C")]))
+
+(define selectRoute_btn (new button%  [parent right-column] [label "SELECT ROUTE"] [font (make-object font% 10 'default 'normal 'bold)]
+                                      [callback (lambda (button event) (getSelectedPath))]))
 
 
 #|***************************************************RIGHT COLUMN FUNCTIONS****************************************************|#
 
 ;;Functions to Add Nodes
-(define add_node_btn (new button%  [parent right-column] [label "ADD NODE"]  [callback (lambda (button event) (addNodetoGraph))]))
 (define (addNodetoGraph)
   (drawNodes (string->number(send x-field get-value)) (string->number(send y-field get-value)))
-  (addPostoHash (send name-field get-value) (list (+ (string->number(send x-field get-value)) 5) (+ (string->number(send y-field get-value)) 5)))
+  (addPostoHash (send name-field get-value) (list (+ (string->number(send x-field get-value)) 5)
+                                                  (+ (string->number(send y-field get-value)) 5)))
   )
 (define (addPostoHash key lista)
   (hash-set! xypos-hash key lista)
    )
 
 ;;Functions to join Nodes
-(define joinNodes_btn(new button%  [parent right-column] [label "JOIN NODES"]  [callback (lambda (button event) (joinNodes))]))
 (define (joinNodes)
   (addToGraph (string->number (send from-field get-value)) (string->number (send  to-field get-value)))
-  (send dc draw-line (car(hash-ref xypos-hash (send from-field get-value))) (cadr(hash-ref xypos-hash (send from-field get-value))) (car(hash-ref xypos-hash (send  to-field get-value))) (cadr(hash-ref xypos-hash (send  to-field get-value))))
+  (send dc draw-line (car(hash-ref xypos-hash (send from-field get-value)))
+                     (cadr(hash-ref xypos-hash (send from-field get-value)))
+                     (car(hash-ref xypos-hash (send  to-field get-value)))
+                     (cadr(hash-ref xypos-hash (send  to-field get-value))))
   (display graph)
   )
+
+;;Select Route from list-box
+(define (getSelectedPath)
+  (#t))
+
 
 #|*************************************************CENTER COLUMN DEFINITIONS***************************************************|#
 
 ;;Interaction spaces in right panel : Find Paths
 (define src-field
-  (new text-field% [parent center-column] [label "SRC"] [min-width 100]))
+  (new text-field% [parent center-column] [label "Src"]  [font (make-object font% 10 'default 'normal)]))
 (define dest-field
-  (new text-field% [parent center-column] [label "DEST"] [min-width 100]))
+  (new text-field% [parent center-column] [label "Dest"]  [font (make-object font% 10 'default 'normal )]))
 
 
 #|**************************************************CENTER COLUMN FUNCTIONS****************************************************|#
 
 ;;Functions to Find Paths
-(define search_routes_btn (new button%  [parent center-column] [label "SEARCH"] [callback (lambda (button event) (searchRoutes))]))
+(define search_routes_btn (new button%  [parent center-column] [label "SEARCH"] [font (make-object font% 10 'default 'normal 'bold)]
+                                        [callback (lambda (button event) (searchRoutes))]))
 (define (searchRoutes)
   (display (find-paths (string->number (send src-field get-value)) (string->number (send dest-field get-value)) graph))
   (find-paths (string->number (send src-field get-value)) (string->number (send dest-field get-value)) graph)
@@ -110,6 +134,11 @@
 ;(define (draw-app_icon left-column dc) (send dc set-scale 0.4 0.4))
 ;(send dc draw-bitmap app_icon 10 10)
 (void (new message% [parent left-column] [label app_icon]))
+
+(define info_btn (new button%  [parent left-column] [label "INFO"]  [font (make-object font% 10 'default 'normal 'bold)]
+                               [callback (lambda (button event) (addNodetoGraph))]))
+(define exit_btn (new button%  [parent left-column] [label "EXIT"]  [font (make-object font% 10 'default 'normal 'bold)]
+                               [callback (lambda (button event) (addNodetoGraph))]))
 
 #|***************************************************LEFT COLUMN FUNCTIONS*****************************************************|#
 
