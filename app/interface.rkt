@@ -71,12 +71,14 @@
 
 ;;Interaction spaces in left panel : Join Nodes
 (define from-field
-  (new text-field% [parent left-column] [label "From"] [font (make-object font% 10 'default 'normal )]))
+  (new text-field% [parent left-column] [label "  From:"] [font (make-object font% 10 'default 'normal )]))
 (define to-field
-  (new text-field% [parent left-column] [label "    To"] [font (make-object font% 10 'default 'normal )]))
+  (new text-field% [parent left-column] [label "      To:"] [font (make-object font% 10 'default 'normal )]))
+(define weight-field
+  (new text-field% [parent left-column] [label "Weight:"] [font (make-object font% 10 'default 'normal )]))
 
 (define joinNodes_btn(new button%  [parent left-column] [label btn_joinnodes] [font (make-object font% 10 'default 'normal 'bold)]
-                                   [callback (lambda (button event) (joinNodes))] ))
+                                   [callback (lambda (button event) (joinNodes)(drawWeight (send weight-field get-value)))]))
 
 
 #|***************************************************LEFT COLUMN FUNCTIONS*****************************************************|#
@@ -108,6 +110,10 @@
                      (cadr(hash-ref xypos-hash (hash-ref nameNumberHash (send to-field get-value)))))
   (display graph)
   )
+
+(define (drawWeight weight)
+   (send dc draw-text weight (+ (car(hash-ref xypos-hash (hash-ref nameNumberHash (send from-field get-value)))) 10)
+                             (+ (cadr(hash-ref xypos-hash (hash-ref nameNumberHash (send from-field get-value)))) 10)))
 
 
 
