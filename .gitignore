@@ -14,3 +14,5 @@ test/interface/compiled/drracket/errortrace/
 test/pathfind/compiled/drracket/errortrace/
 
 app/util/compiled/drracket/errortrace/
+
+*.rkt~

@@ -18,8 +18,10 @@
 
 (module+ test
   ;;Tests to be run
-  ;(run_finder_test)
-  ;(run_map_tests)
+  (display "------- WAZITICO : APPLICATION TESTS -------\n\n")
+  (run_finder_test)
+  (run_interface_test)
+  (display "\n------- WAZITICO : APPLICATION TESTS -------\n")
   )
 
 (module+ main
