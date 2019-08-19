@@ -3,8 +3,8 @@
 (require racket/draw)
 
 (require "../../app/interface.rkt")
-(provide run_interface_test)
+(provide run_interfaceTest)
 
-(define (run_interface_test)
+(define (run_interfaceTest)
   (display "--INTERFACE TESTS: \n")
   )

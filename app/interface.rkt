@@ -129,7 +129,7 @@
                                         [callback (lambda (button event) (searchRoutes))]))
 (define (searchRoutes)
   (send allPathsList clear)
-  (serchRoutesAux (find-paths (hash-ref nameNumberHash (send srcField get-value))
+  (serchRoutesAux (findPaths (hash-ref nameNumberHash (send srcField get-value))
                               (hash-ref nameNumberHash (send destField get-value))
                               graph) 0)
 )

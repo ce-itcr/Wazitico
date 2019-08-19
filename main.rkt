@@ -19,8 +19,8 @@
 (module+ test
   ;;Tests to be run
   (display "------- WAZITICO : APPLICATION TESTS -------\n\n")
-  (run_finder_test)
-  (run_interface_test)
+  (run_finderTest)
+  (run_interfaceTest)
   (display "\n------- WAZITICO : APPLICATION TESTS -------\n")
   )
 
