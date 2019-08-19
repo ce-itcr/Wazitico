@@ -1,8 +1,7 @@
 #lang racket/gui
 
 (require racket/draw simple-svg)
-(require "../src/pathfind/finder.rkt"
-         "util/gui_functions.rkt")
+(require "../src/pathfind/finder.rkt")
 (provide runner)
 
 
