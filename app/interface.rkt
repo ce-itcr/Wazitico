@@ -8,10 +8,10 @@
 #|****************************************************GLOBAL UI DEFINITIONS****************************************************|#
 
 ;;Colors
-(define black (make-object color% "black"))
-(define white (make-object color% "white"))
-(define red (make-object color% "red"))
-(define gray (make-object color% "gray"))
+(define black (make-object color% "Black"))
+(define white (make-object color% "White"))
+(define red (make-object color% "Red"))
+(define gray (make-object color% "Gray"))
 
 ;;Pens and their colors
 (define redDrawingPen (make-object pen% red 4 'solid))
@@ -58,11 +58,13 @@
 
 ;;Interaction spaces in left panel : Add Nodes
 (define nameField
-  (new text-field% [parent leftColumn] [label "Name:"] [font (make-object font% 10 'default 'normal)]))
+  (new text-field% [parent leftColumn] [label " Name:"] [font (make-object font% 10 'default 'normal)]))
 (define xField
   (new text-field% [parent leftColumn] [label "X Pos:"] [font (make-object font% 10 'default 'normal )]))
 (define yField
   (new text-field% [parent leftColumn] [label "Y Pos:"] [font (make-object font% 10 'default 'normal )]))
+(define colorField
+  (new text-field% [parent leftColumn] [label " Color:"] [font (make-object font% 10 'default 'normal )]))
 
 (define btn_addNode (new button%  [parent leftColumn] [label img_addnode] [font (make-object font% 10 'default 'normal 'bold)]
                                    [callback (lambda (button event) (addNodetoGraph))]))
@@ -82,7 +84,7 @@
 
 ;;Functions to Add Nodes
 (define (addNodetoGraph)
-  (drawNodes (string->number(send xField get-value)) (string->number(send yField get-value)) (send nameField get-value))
+  (drawNodes (string->number(send xField get-value)) (string->number(send yField get-value)) (send nameField get-value) (send colorField get-value))
   (addPostoHash (send nameField get-value) (list (+ (string->number(send xField get-value)) 5)
                                                   (+ (string->number(send yField get-value)) 5))))
 
@@ -145,9 +147,13 @@
   )
 
 ;;Draw nodes given an x and y
-(define (drawNodes x y name)
-  (send dc set-brush "black" 'solid)
-  (send dc draw-ellipse x y 10 10)
+(define (drawNodes x y name color)
+  (cond((eq? color null)
+        (send dc set-pen "black" 'solid)
+        (send dc draw-ellipse x y 10 10))
+       (else
+         (send dc set-brush color 'solid)
+         (send dc draw-ellipse x y 10 10)))
   (send dc set-text-foreground "black")
   (send dc draw-text name (- x 10) (- y 20))
 )
