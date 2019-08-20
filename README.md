@@ -1,10 +1,11 @@
 <p align="center">
-  <img width=50% src="https://res.cloudinary.com/dek4evg4t/image/upload/v1565376199/CE3104/imagotype.png">
+  <img width="500" height="150" src="https://res.cloudinary.com/dek4evg4t/image/upload/v1565376199/CE3104/imagotype.png">
 </p>
+
 
 Wazitico corresponde al _Proyecto I_ para el curso de _Lenguajes, Compiladores e Intérpretes. (CE3104)_, Módulo Lenguajes.
 El mismo consiste en la implementación de una aplicación que permita reafirmar el conocimiento del **paradigma de programación funcional** 
-utiizando [DrRacket](https://racket-lang.org/).
+utilizando [DrRacket](https://racket-lang.org/).
 
 
 El presente tiene como objetivo el desarrollo de un grafo mixto que simule la famosa aplicación [Waze](https://www.waze.com/).
@@ -21,12 +22,27 @@ aprende de las rutas  recorridas por sus usuarios para proveer información de e
 ## Pre Requisitos.
 
 ```
+racket : sudo apt-get install racket
+racket/draw 
+simple-svg
 ```
 
 ## Instalación.
 
-```
-```
+Prerequisitos: Debe tener instalado [Git](https://git-scm.com/book/es/v2/Inicio---Sobre-el-Control-de-Versiones-Instalaci%C3%B3n-de-Git) en su consola.
+
+1. En GitHub, vaya a la página principal del [repositorio del Proyecto](https://github.com/ce-itcr/Wazitico).
+2. Debajo del nombre del repositorio, haga clic en Clonar o descargar.
+3. En la sección Clonar con HTTPs, haga clic para copiar la URL de clonación del repositorio.
+4. Abre Git Bash.
+5. Cambie el directorio de trabajo actual a la ubicación donde desea que se realice el directorio clonado.
+6. Escriba 'git clone', y luego pegue la URL que copió en el Paso 2.
+
+    ```$ git clone https://github.com/ce-itcr/Wazitico.git```
+    
+7. Presione Entrar. Su clon local de Wazitivo se creará.
+8. Abra [DrRacket](https://racket-lang.org/), seleccione: Archivo -> Abrir y vaya a la ubicación donde clonó el proyecto.
+9. Haga clic en main.rkt para abrir el proyecto.
 
 
 ## Autores.
