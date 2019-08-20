@@ -1,6 +1,6 @@
 #lang racket/gui
 
-(require racket/draw simple-svg)
+(require racket/draw racket/draw/arrow simple-svg pict)
 (require "../src/pathfind/finder.rkt")
 (provide runner)
 
@@ -16,8 +16,11 @@
 ;;Pens and their colors
 (define redDrawingPen (make-object pen% red 4 'solid))
 (define grayDrawingPen (make-object pen% gray 4 'solid))
+(define blackDrawingPen (new pen% [color "black"][width 2]))
+(define greenDrawingPen (new pen% [color (make-object color% 0 200 0)][width 2]))
 (define redBrush (instantiate brush% ("RED" 'solid)))
-(define  grayBrush (instantiate brush% ("GRAY" 'solid)))
+(define grayBrush (instantiate brush% ("GRAY" 'solid)))
+(define greenBrush (new brush% [color (make-object color% 40 70 50)]))
 
 ;;Interface Variable Definition
 (define xyposHash (make-hash))
@@ -98,7 +101,7 @@
 ;;Join Nodes
 (define (joinNodes)
   (addToGraph (hash-ref nameNumberHash (send fromField get-value)) (hash-ref nameNumberHash (send  toField get-value)))
-  (set lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
+  (set! lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
                             (hash-ref nameNumberHash (send  toField get-value)))
                       lineList))
   (send dc draw-line (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
@@ -159,8 +162,8 @@
 )
 
 ;;Draw routes between two nodes
-(define (drawRoutes x1 y1 x2 y2)
-  (send dc set-brush "black" 'solid)
+(define (drawRoutes x1 y1 x2 y2 color)
+  (send dc set-brush color 'solid)
   (send dc draw-line x1 y1 x2 y2)
   )
 
@@ -178,15 +181,31 @@
 (define btn_selectRoute (new button%  [parent rightColumn] [label img_selectroute]
                                       [font (make-object font% 10 'default 'normal 'bold)]
                                       [callback (lambda (button event)
-                                                        (getSelectedPath (send allPathsList get-string-selection)))]))
+                                                        (getSelectedPath (convertToList  (send allPathsList get-string-selection))))]))
 
 
 #|***************************************************RIGHT COLUMN FUNCTIONS****************************************************|#
 
+
+(define (convertToList str)
+  (with-input-from-string str read))
+
 ;;Select Route from list-box
 (define (getSelectedPath path)
-  (display path)
-  (send dc set-pen "red" 3 'solid)
+   (unless (empty? path)
+   ;(display (first path))
+   ;(display (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path))))))
+
+    (send dc set-pen "red" 5 'solid)
+     (drawRoutes  (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path))))) 
+                 (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                 "red"
+          )
+
+     (getSelectedPath (rest path)))
+  
   )
 
 
