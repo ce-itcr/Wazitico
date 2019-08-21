@@ -143,10 +143,17 @@
   (cond ((null? routesList)
          #t)
         (else
-         (send allPathsList append (~a (for/list ([i (car routesList)])
-                                           (hash-ref numberNameHash i))))
+         (send allPathsList append (~a (numberToNameList (car routesList))))
          (serchRoutesAux (cdr routesList) (+ routesCounter 1)))
         )
+  )
+
+(define (numberToNameList routesList)
+  (cond((null? routesList)
+        '())
+       (else
+        (cons (hash-ref numberNameHash(car routesList)) (numberToNameList (cdr routesList))))
+       )
   )
 
 ;;Draw nodes given an x and y
