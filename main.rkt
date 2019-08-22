@@ -2,7 +2,7 @@
 
   @file main.rkt
   @version 0.1
-  @date
+  @date 22/08/2019
   @authors angelortizv, isolis2000, jesquivel48
   @brief Wazitico corresponds to Project I for the course of Languages, Compilers and Interpreters. (CE3104),
          Languages module. It aims to develop a mixed graph that simulates the famous Waze application.

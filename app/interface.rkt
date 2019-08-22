@@ -5,7 +5,7 @@
 (provide runner)
 
 
-#|****************************************************GLOBAL UI DEFINITIONS****************************************************|#
+#|*********************************************************GLOBAL UI DEFINITIONS*********************************************************|#
 
 ;;Colors
 (define black (make-object color% "Black"))
@@ -52,7 +52,7 @@
 (define img_joinnodes (make-object bitmap% "img/btn_joinnodes.png" 'png/alpha #f #f 6.0))
 (define img_selectroute (make-object bitmap% "img/btn_selectroute.png" 'png/alpha #f #f 6.0))
 
-#|**************************************************LEFT COLUMN DEFINITIONS****************************************************|#
+#|*******************************************************LEFT COLUMN DEFINITIONS*********************************************************|#
 
 ;;App Icon
 (define img_appIcon (make-object bitmap% "img/ic_launcher.png" 'png/alpha))
@@ -80,18 +80,27 @@
   (new text-field% [parent leftColumn] [label "Weight:"] [font (make-object font% 10 'default 'normal )]))
 
 (define btn_joinNodes (new button%  [parent leftColumn] [label img_joinnodes] [font (make-object font% 10 'default 'normal 'bold)]
-                                   [callback (lambda (button event) (joinNodes blackDrawingPen
-                                                                               (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
-                                                                               (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
-                                                                               (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
-                                                                               (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
-                                               (drawWeight (send weightField get-value)))]))
+                                   [callback (lambda (button event)
+                                               (joinNodes blackDrawingPen
+                                                          (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                          (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                          (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
+                                                          (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
+                                               (drawWeight (send weightField get-value))
+                                               (addToGraph (hash-ref nameNumberHash (send fromField get-value))
+                                                           (hash-ref nameNumberHash (send  toField get-value)))
+                                               (set! lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
+                                                                          (hash-ref nameNumberHash (send  toField get-value)))
+                                                                    lineList))
+                                               )]))
 
-#|***************************************************LEFT COLUMN FUNCTIONS*****************************************************|#
+#|********************************************************LEFT COLUMN FUNCTIONS**********************************************************|#
 
 ;;Functions to Add Nodes
 (define (addNodetoGraph)
-  (drawNodes (string->number(send xField get-value)) (string->number(send yField get-value)) (send nameField get-value) (send colorField get-value))
+
+  ;(cond ((null? ())))
+  (drawNodes (string->number(send xField get-value))(string->number(send yField get-value))(send nameField get-value)(send colorField get-value))
   (addPostoHash (send nameField get-value) (list (+ (string->number(send xField get-value)) 5)
                                                   (+ (string->number(send yField get-value)) 5))))
 
@@ -104,13 +113,11 @@
 
 ;;Join Nodes
 (define (joinNodes color x1 y1 x2 y2)
-  (addToGraph (hash-ref nameNumberHash (send fromField get-value)) (hash-ref nameNumberHash (send  toField get-value)))
-  (set! lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
-                            (hash-ref nameNumberHash (send  toField get-value)))
-                      lineList))
   (send dc set-pen color)
   (draw-arrow dc x1 y1 x2 y2 0 0)
-  (display graph))
+  (send dc set-pen blackDrawingPen)
+  ;(display graph)
+  )
 
 ;;Draw Routes Weight
 (define (drawWeight weight)
@@ -119,7 +126,7 @@
 
 
 
-#|*************************************************CENTER COLUMN DEFINITIONS***************************************************|#
+#|******************************************************CENTER COLUMN DEFINITIONS********************************************************|#
 
 ;;Interaction spaces in center panel : Find Paths
 (define srcField
@@ -128,7 +135,7 @@
   (new text-field% [parent upperCenterColumn] [label "Dest"]  [font (make-object font% 10 'default 'normal )]))
 
 
-#|**************************************************CENTER COLUMN FUNCTIONS****************************************************|#
+#|*******************************************************CENTER COLUMN FUNCTIONS*********************************************************|#
 
 ;;Functions to Find Paths
 (define btn_searchRoutes (new button%  [parent upperCenterColumn] [label img_findpaths]
@@ -170,14 +177,8 @@
   (send dc draw-text name (- x 10) (- y 20))
 )
 
-;;Draw routes between two nodes
-(define (drawRoutes x1 y1 x2 y2 color)
-  (send dc set-brush color 'solid)
-  (send dc draw-line x1 y1 x2 y2)
-  )
 
-
-#|**************************************************RIGHT COLUMN DEFINITIONS***************************************************|#
+#|*******************************************************RIGHT COLUMN DEFINITIONS********************************************************|#
 
 ;;List box with all paths
 (define allPathsList
@@ -189,12 +190,12 @@
 
 (define btn_selectRoute (new button%  [parent rightColumn] [label img_selectroute]
                                       [font (make-object font% 10 'default 'normal 'bold)]
+
                                       [callback (lambda (button event)
                                                         (getSelectedPath (convertToList  (send allPathsList get-string-selection))))]))
 
 
-#|***************************************************RIGHT COLUMN FUNCTIONS****************************************************|#
-
+#|********************************************************RIGHT COLUMN FUNCTIONS*********************************************************|#
 
 (define (convertToList str)
   (with-input-from-string str read))
@@ -202,26 +203,21 @@
 ;;Select Route from list-box
 (define (getSelectedPath path)
    (unless (empty? path)
-   (display (first path))
      (joinNodes redDrawingPen
                 (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
                 (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
                 )
-
      (getSelectedPath (rest path)))
-  
   )
 
-
-#|******************************************************INTERFACE RUNNER*******************************************************|#
+#|***********************************************************INTERFACE RUNNER************************************************************|#
 
 ;;Window handling from main file
 (define (runner bool)
   (cond ((equal? bool #t)
          (send window show #t)
-         ;(load-map)
          )
         (else
          (send window show #f))))

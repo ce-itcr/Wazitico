@@ -61,38 +61,38 @@
                          result)
          )))
 
-;;
-(define (shortest-path node-id1 node-id2 graph)
-  (define (insert connection current-cost cur-path lst)
-    (cond [(null? lst) (list (cons
+;;Find shortest route between two nodes in a graph
+(define (shortest-path src dest graph)
+  (define (insert connection currentCost currentPath list1)
+    (cond [(null? list1) (list (cons
                               (cons (idPointsTo connection)
-                                   (+ current-cost (cost connection)))
-                              (append cur-path (list (idPointsTo connection)))))]
-          [(< (+ (cost connection) current-cost) (cadar lst))
+                                   (+ currentCost (cost connection)))
+                              (append currentPath (list (idPointsTo connection)))))]
+          [(< (+ (cost connection) currentCost) (cadar list1))
            (cons (cons
                   (cons (idPointsTo connection)
-                       (+ current-cost (cost connection)))
-                  (append cur-path (list (idPointsTo connection))))
-                 lst)]
-          [else (cons (car lst) (insert connection current-cost cur-path (cdr lst)))]
+                       (+ currentCost (cost connection)))
+                  (append currentPath (list (idPointsTo connection))))
+                 list1)]
+          [else (cons (car list1) (insert connection currentCost currentPath (cdr list1)))]
       ))
-  (define (add-connections-to-list connections cur-path cur-cost lst)
-    (cond [(null? connections) lst]
-          [else (add-connections-to-list (cdr connections) cur-path cur-cost
-                 (insert (car connections) cur-cost cur-path lst))]
+  (define (addConnectionsToList connections currentPath currentCost list1)
+    (cond [(null? connections) list1]
+          [else (addConnectionsToList (cdr connections) currentPath currentCost
+                 (insert (car connections) currentCost currentPath list1))]
       ))
-  (define (iter lst)
-    (cond [(eq? (caaar lst) node-id2) (list (cdaar lst) (cdar lst))]
-          [else (iter (add-connections-to-list
-                       (connections (associate (caaar lst) graph))
-                       (cdar lst)
-                       (cdaar lst)
-                       (cdr lst))
+  (define (iter list1)
+    (cond [(eq? (caaar list1) dest) (list (cdaar list1) (cdar list1))]
+          [else (iter (addConnectionsToList
+                       (connections (associate (caaar list1) graph))
+                       (cdar list1)
+                       (cdaar list1)
+                       (cdr list1))
                      )]
       ))
   (iter (list (cons
                (cons
-                node-id1
+                src
                 0
                 )
-               (list node-id1)))))
+               (list src)))))
