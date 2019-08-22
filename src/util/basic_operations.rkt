@@ -71,9 +71,15 @@
 
 #|********************************************************GRAPH OPERATIONS*********************************************************|#
 
-(define (firstNode graph) (car graph))
-(define (exceptFirst graph) (cdr graph))
-(define (isEmpty? graph) (null? graph))
+(define (firstNode graph)(car graph))
+(define (exceptFirst graph)(cdr graph))
+(define (isEmpty? graph)(null? graph))
+(define (nodeID node)(car node))
+(define (cost connection)(car connection))
+(define (idPointsTo connection)(cdr connection))
+(define (connections node)(car node))
+
+
 
 ;There is route
 (define (solution? end route)
@@ -97,3 +103,9 @@
          (extendAux (cdr neighbors)
                      (append result (list (list* (car neighbors) path)))
                      path))))
+
+;;Associate node to graph
+(define (associate node graph)
+  (cond [(isEmpty? graph) #f]
+        [(equal? (nodeID (firstNode graph)) node) (firstNode graph)]
+        [else (associate node (exceptFirst graph))]))

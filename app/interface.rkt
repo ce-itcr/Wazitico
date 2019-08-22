@@ -203,8 +203,6 @@
 (define (getSelectedPath path)
    (unless (empty? path)
    (display (first path))
-     
-
      (joinNodes redDrawingPen
                 (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))

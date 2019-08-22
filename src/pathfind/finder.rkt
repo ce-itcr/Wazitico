@@ -37,8 +37,8 @@
        )
   )
 
-;Find all routes between src and dest in a graph
-;Function uses width first
+;Find all routes between two nodes in a graph
+;Function uses width first algorithm
 (define (findPaths src dest graph)
   (cond ((equal? src dest)
          (list src))
@@ -61,4 +61,38 @@
                          result)
          )))
 
-
+;;
+(define (shortest-path node-id1 node-id2 graph)
+  (define (insert connection current-cost cur-path lst)
+    (cond [(null? lst) (list (cons
+                              (cons (idPointsTo connection)
+                                   (+ current-cost (cost connection)))
+                              (append cur-path (list (idPointsTo connection)))))]
+          [(< (+ (cost connection) current-cost) (cadar lst))
+           (cons (cons
+                  (cons (idPointsTo connection)
+                       (+ current-cost (cost connection)))
+                  (append cur-path (list (idPointsTo connection))))
+                 lst)]
+          [else (cons (car lst) (insert connection current-cost cur-path (cdr lst)))]
+      ))
+  (define (add-connections-to-list connections cur-path cur-cost lst)
+    (cond [(null? connections) lst]
+          [else (add-connections-to-list (cdr connections) cur-path cur-cost
+                 (insert (car connections) cur-cost cur-path lst))]
+      ))
+  (define (iter lst)
+    (cond [(eq? (caaar lst) node-id2) (list (cdaar lst) (cdar lst))]
+          [else (iter (add-connections-to-list
+                       (connections (associate (caaar lst) graph))
+                       (cdar lst)
+                       (cdaar lst)
+                       (cdr lst))
+                     )]
+      ))
+  (iter (list (cons
+               (cons
+                node-id1
+                0
+                )
+               (list node-id1)))))
