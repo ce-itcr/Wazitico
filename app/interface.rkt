@@ -28,7 +28,6 @@
 (define numberNameHash (make-hash))
 (define counter 0)
 (define lineList '())
-(define lineHash (make-hash))
 
 ;;Windows and Interface Panels
 (define window (new frame% [label "Wazitico"] [width 1200] [height 700] [style '(no-resize-border)]))
@@ -81,7 +80,12 @@
   (new text-field% [parent leftColumn] [label "Weight:"] [font (make-object font% 10 'default 'normal )]))
 
 (define btn_joinNodes (new button%  [parent leftColumn] [label img_joinnodes] [font (make-object font% 10 'default 'normal 'bold)]
-                                   [callback (lambda (button event) (joinNodes)(drawWeight (send weightField get-value)))]))
+                                   [callback (lambda (button event) (joinNodes blackDrawingPen
+                                                                               (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                                               (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
+                                                                               (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
+                                                                               (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
+                                               (drawWeight (send weightField get-value)))]))
 
 #|***************************************************LEFT COLUMN FUNCTIONS*****************************************************|#
 
@@ -99,15 +103,13 @@
   (set! counter (+ counter 1)))
 
 ;;Join Nodes
-(define (joinNodes)
+(define (joinNodes color x1 y1 x2 y2)
   (addToGraph (hash-ref nameNumberHash (send fromField get-value)) (hash-ref nameNumberHash (send  toField get-value)))
   (set! lineList (cons (list (hash-ref nameNumberHash (send fromField get-value))
                             (hash-ref nameNumberHash (send  toField get-value)))
                       lineList))
-  (send dc draw-line (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
-                     (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value))))
-                     (car(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value))))
-                     (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send toField get-value)))))
+  (send dc set-pen color)
+  (draw-arrow dc x1 y1 x2 y2 0 0)
   (display graph))
 
 ;;Draw Routes Weight
@@ -200,16 +202,15 @@
 ;;Select Route from list-box
 (define (getSelectedPath path)
    (unless (empty? path)
-   ;(display (first path))
-   ;(display (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path))))))
+   (display (first path))
+     
 
-    (send dc set-pen "red" 5 'solid)
-     (drawRoutes  (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path))))) 
-                 (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                 (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                 "red"
-          )
+     (joinNodes redDrawingPen
+                (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
+                )
 
      (getSelectedPath (rest path)))
   
