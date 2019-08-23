@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="500" height="150" src="https://res.cloudinary.com/dek4evg4t/image/upload/v1565376199/CE3104/imagotype.png">
+  <img width="400" height="130" src="https://res.cloudinary.com/dek4evg4t/image/upload/v1565376199/CE3104/imagotype.png">
 </p>
 
 
@@ -16,8 +16,15 @@ aprende de las rutas  recorridas por sus usuarios para proveer información de e
 
 ## Vista Previa.
 
-```
-```
+Flujo del Proyecto, Interacción con el usuario:
+1. Adición de Nodos (Lugares).
+2. Unión de Nodos con Peso.
+3. Búsqueda de Rutas Posibles, por defecto selecciona la más corta, pero se puede seleccionar cualquiera de las mostradas en la lista del panel derecho.
+
+<p align="center"><img width="80%" src="https://res.cloudinary.com/dek4evg4t/image/upload/v1566587210/CE3104/01.addNodes.png">
+<img width="80%" src="https://res.cloudinary.com/dek4evg4t/image/upload/v1566587210/CE3104/02.joinNodes.png">
+<img width="80%" src="https://res.cloudinary.com/dek4evg4t/image/upload/v1566587210/CE3104/03.findPaths.png"></p>
+
 
 ## Pre Requisitos.
 
