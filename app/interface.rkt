@@ -32,7 +32,6 @@
 ;;Windows and Interface Panels
 (define window (new frame% [label "Wazitico"] [width 1200] [height 700] [style '(no-resize-border)]))
 (define row (new horizontal-panel% [parent window] [style '(border)] [alignment '(center center)]))
-
 (define leftColumn (new vertical-panel% [parent row][alignment '(center center)]
                                          [style '(border)][horiz-margin 10][vert-margin 10][min-width 300]))
 (define centerColumn (new vertical-panel% [parent row][alignment '(center center)]
@@ -115,14 +114,12 @@
   (send dc set-pen color)
   (draw-arrow dc x1 y1 x2 y2 0 0)
   (send dc set-pen blackDrawingPen)
-  ;(display graph)
   )
 
 ;;Draw Routes Weight
 (define (drawWeight weight)
    (send dc draw-text weight (+ (car(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value)))) 10)
                              (+ (cadr(hash-ref xyposHash (hash-ref nameNumberHash (send fromField get-value)))) 10)))
-
 
 
 #|******************************************************CENTER COLUMN DEFINITIONS********************************************************|#
@@ -207,38 +204,45 @@
 
 ;;Select Route from list-box
 (define (getSelectedPath path)
-
-  ;(display path)(display "\n")
-  ;(display (first path))(display "\n")
-  ;(display (hash-ref nameNumberHash (symbol->string (first path))))(display "\n")
-  ;(display (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))(display "\n")
-
   (unless (empty? path)
-          (joinNodes redDrawingPen
-                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
-                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
-                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
-                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
-                     )
-         (getSelectedPath (rest path))
+    (cond ((null? (rest path))
+           (joinNodes redDrawingPen
+                      (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                      (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                      (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                      (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path))))))
+           (getSelectedPath (rest path)))
+          (else
+           (joinNodes redDrawingPen
+                      (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                      (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                      (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
+                      (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path)))))))
+           (getSelectedPath (rest path)))
+          )
     )
   )
 
+;;Print routes with blackDrawingPen
 (define (updatePaths path)
-  (display lineList)
  (unless (empty? path)
+   (cond ((null? (rest path))
+          (joinNodes blackDrawingPen
+                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path))))))
+          (updatePaths (rest path)))
+         (else
           (joinNodes blackDrawingPen
                      (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
                      (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
                      (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
-                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
-                     )
-         (updatePaths (rest path))
-    )
-    )
-
-
-
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path)))))))
+          (updatePaths (rest path)))
+         )
+   )
+  )
 
 
 #|***********************************************************INTERFACE RUNNER************************************************************|#
