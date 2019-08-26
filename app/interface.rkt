@@ -98,11 +98,10 @@
 
 ;;Functions to Add Nodes
 (define (addNodetoGraph)
-
-  ;(cond ((null? ())))
   (drawNodes (string->number(send xField get-value))(string->number(send yField get-value))(send nameField get-value)(send colorField get-value))
   (addPostoHash (send nameField get-value) (list (+ (string->number(send xField get-value)) 5)
-                                                  (+ (string->number(send yField get-value)) 5))))
+                                                  (+ (string->number(send yField get-value)) 5)))
+  )
 
 ;;Add node position to hash
 (define (addPostoHash key coordlist)
@@ -146,6 +145,9 @@
   (serchRoutesAux (findPaths (hash-ref nameNumberHash (send srcField get-value))
                               (hash-ref nameNumberHash (send destField get-value))
                               graph) 0)
+  ;(shortestPath (hash-ref nameNumberHash (send srcField get-value))
+  ;              (hash-ref nameNumberHash (send destField get-value))
+  ;                            graph)
 )
 
 (define (serchRoutesAux routesList routesCounter)
@@ -187,12 +189,15 @@
                  [style (list 'single 'column-headers 'variable-columns)]
                  [columns (list "Paths")]))
 
-
 (define btn_selectRoute (new button%  [parent rightColumn] [label img_selectroute]
                                       [font (make-object font% 10 'default 'normal 'bold)]
-
                                       [callback (lambda (button event)
                                                         (getSelectedPath (convertToList  (send allPathsList get-string-selection))))]))
+
+(define btn_updatePaths (new button%  [parent rightColumn] [label "UPDATE PATHS"]
+                                      [font (make-object font% 10 'default 'normal 'bold)]
+                                      [callback (lambda (button event)
+                                                        (updatePaths (convertToList  (send allPathsList get-string-selection))))]))
 
 
 #|********************************************************RIGHT COLUMN FUNCTIONS*********************************************************|#
@@ -202,15 +207,39 @@
 
 ;;Select Route from list-box
 (define (getSelectedPath path)
-   (unless (empty? path)
-     (joinNodes redDrawingPen
-                (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                (car (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                (cadr (hash-ref xyposHash (hash-ref nameNumberHash (~v (first path)))))
-                )
-     (getSelectedPath (rest path)))
+
+  ;(display path)(display "\n")
+  ;(display (first path))(display "\n")
+  ;(display (hash-ref nameNumberHash (symbol->string (first path))))(display "\n")
+  ;(display (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))(display "\n")
+
+  (unless (empty? path)
+          (joinNodes redDrawingPen
+                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
+                     )
+         (getSelectedPath (rest path))
+    )
   )
+
+(define (updatePaths path)
+  (display lineList)
+ (unless (empty? path)
+          (joinNodes blackDrawingPen
+                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (first path)))))
+                     (car (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
+                     (cadr (hash-ref xyposHash (hash-ref nameNumberHash (symbol->string (car (rest path))))))
+                     )
+         (updatePaths (rest path))
+    )
+    )
+
+
+
+
 
 #|***********************************************************INTERFACE RUNNER************************************************************|#
 

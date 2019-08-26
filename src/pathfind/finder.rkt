@@ -1,7 +1,7 @@
 #lang racket
 
 (require "../util/basic_operations.rkt")
-(provide findPaths addToGraph graph)
+(provide findPaths addToGraph graph shortestPath)
 
 (define graph '())
 
@@ -62,7 +62,7 @@
          )))
 
 ;;Find shortest route between two nodes in a graph
-(define (shortest-path src dest graph)
+(define (shortestPath src dest graph)
   (define (insert connection currentCost currentPath list1)
     (cond [(null? list1) (list (cons
                               (cons (idPointsTo connection)
